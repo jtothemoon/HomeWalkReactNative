@@ -21,6 +21,60 @@ const dbConfig = {
 // stepsData 변수 정의 및 초기화
 let stepsData = [];
 
+// 일정 시간마다 데이터를 DB에 저장하기 위한 함수
+const saveStepsToDatabase = async () => {
+    if (stepsData.length === 0) {
+        return;
+    }
+
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+
+        for (const data of stepsData) {
+            const { userId, steps, timestamp } = data;
+            const date = new Date(timestamp).toISOString().split('T')[0];
+            const hour = new Date(timestamp).getHours();
+            
+            // 기존 데이터가 있는지 확인
+            const [rows] = await connection.execute(
+                `SELECT steps_count, hourly_data FROM steps WHERE user_id = ? AND date = ?`,
+                [userId, date]
+            );
+
+            if (rows.length > 0) {
+                // 데이터가 존재하면 업데이트 (걸음수 +1 및 hourly_data 업데이트)
+                const existingSteps = rows[0].steps_count;
+                let hourlyData = JSON.parse(rows[0].hourly_data || '{}');
+                
+                // 각 걸음 수를 1씩 증가시키는 방식으로 처리
+                hourlyData[hour] = (hourlyData[hour] || 0) + 1;
+
+                await connection.execute(
+                    `UPDATE steps SET steps_count = ?, hourly_data = ? WHERE user_id = ? AND date = ?`,
+                    [existingSteps + 1, JSON.stringify(hourlyData), userId, date]
+                );
+            } else {
+                // 데이터가 없으면 새로 삽입
+                const hourlyData = JSON.stringify({ [hour]: 1 });
+
+                await connection.execute(
+                    `INSERT INTO steps (user_id, steps_count, date, hourly_data) VALUES (?, ?, ?, ?)`,
+                    [userId, 1, date, hourlyData]
+                );
+            }
+        }
+
+        await connection.end();
+        console.log(`Processed ${stepsData.length} records with step increment.`);
+        stepsData = [];  // 저장 후 메모리 데이터 초기화
+    } catch (error) {
+        console.error('Error processing steps data:', error);
+    }
+};
+
+// 주기적으로 DB에 데이터를 저장 (예: 1분마다)
+setInterval(saveStepsToDatabase, 5000);  // 60000ms = 1분
+
 // 회원가입 엔드포인트 추가
 app.post('/register', async (req, res) => {
     const { username, password, age } = req.body;
@@ -30,12 +84,12 @@ app.post('/register', async (req, res) => {
 
     try {
         const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute('SELECT id FROM user WHERE username = ?', [username]);
+        const [rows] = await connection.execute('SELECT id FROM users WHERE username = ?', [username]);
         if (rows.length > 0) {
             return res.status(409).send('Username already exists');
         }
 
-        await connection.execute('INSERT INTO user (username, password, age) VALUES (?, ?, ?)', [username, password, age]);
+        await connection.execute('INSERT INTO users (username, password, age) VALUES (?, ?, ?)', [username, password, age]);
         await connection.end();
         res.status(201).send('User registered successfully');
     } catch (error) {
@@ -68,11 +122,12 @@ app.post('/login', async (req, res) => {
     // MySQL 데이터베이스에서 사용자 정보 확인
     try {
         const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute('SELECT * FROM user WHERE username = ? AND password = ?', [username, password]);
+        const [rows] = await connection.execute('SELECT user_id FROM users WHERE username = ? AND password = ?', [username, password]);
         await connection.end();
 
         if (rows.length > 0) {
-            res.status(200).send('Login successful');
+            const userId = rows[0].user_id;
+            res.status(200).json({ message: 'Login successful', userId: userId });
         } else {
             res.status(401).send('Invalid username or password');
         }

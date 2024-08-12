@@ -4,13 +4,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SensorTypes, setUpdateIntervalForType, accelerometer } from 'react-native-sensors';
 import { map, filter } from 'rxjs/operators';
 
-const useStepTracker = (userId) => {
+const useStepTracker = () => {
   const [steps, setSteps] = useState(0);
   const [accData, setAccData] = useState([]);
   const [lastPeakTime, setLastPeakTime] = useState(0);
   const [error, setError] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
+    const loadUserId = async () => {
+      try {
+        const savedUserId = await AsyncStorage.getItem('@userId');
+        setUserId(JSON.parse(savedUserId));
+      } catch (e) {
+        console.error('Failed to load userId.', e);
+      }
+    };
+
     const loadSteps = async () => {
       try {
         const savedSteps = await AsyncStorage.getItem(`@steps_${userId}`);
@@ -22,6 +32,7 @@ const useStepTracker = (userId) => {
       }
     };
 
+    loadUserId();
     loadSteps();
 
     const requestPermission = async () => {
@@ -81,13 +92,13 @@ const useStepTracker = (userId) => {
       });
       setLastPeakTime(currentTime);
     }
-  }, [accData]);
+  }, [accData, userId]);
 
   const sendStepToServer = async (userId, steps) => {
     try {
       const timestamp = Date.now();
       console.log('Sending steps data:', { userId, steps, timestamp });
-      const response = await fetch('http://192.168.91.194:3000/steps', {
+      const response = await fetch('http://192.168.134.31:3000/steps', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

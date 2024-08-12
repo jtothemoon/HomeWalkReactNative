@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles/loginStyles';
 
-// 하드코딩된 사용자 정보
 const users = {
     'hj': '123',
     'gy': '123',
@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
 
         // 서버로 로그인 요청 보내기
         try {
-            const response = await fetch('http://192.168.91.224:3000/login', {
+            const response = await fetch('http://192.168.134.31:3000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -34,6 +34,9 @@ const LoginScreen = ({ navigation }) => {
             });
 
             if (response.status === 200) {
+                const data = await response.json();
+                const userId = data.userId;
+                await AsyncStorage.setItem('@userId', JSON.stringify(userId)); // userId를 문자열로 변환하여 저장
                 navigation.replace('Main', { userId: username });
             } else {
                 const errorText = await response.text();
