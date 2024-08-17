@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
 
         // 서버로 로그인 요청 보내기
         try {
-            const response = await fetch('http://192.168.134.31:3000/login', {
+            const response = await fetch('http://192.168.75.38:3000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

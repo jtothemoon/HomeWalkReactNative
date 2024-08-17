@@ -32,9 +32,15 @@ const saveStepsToDatabase = async () => {
 
         for (const data of stepsData) {
             const { userId, steps, timestamp } = data;
-            const date = new Date(timestamp).toISOString().split('T')[0];
-            const hour = new Date(timestamp).getHours();
+            // 로컬 시간대에 맞춘 날짜 추출
+            const dateObj = new Date(timestamp);
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const date = `${year}-${month}-${day}`;
             
+            const hour = dateObj.getHours();
+
             // 기존 데이터가 있는지 확인
             const [rows] = await connection.execute(
                 `SELECT steps_count, hourly_data FROM steps WHERE user_id = ? AND date = ?`,
