@@ -31,7 +31,7 @@ const MainScreen = ({ route, navigation }) => {
       <Text style={styles.steps}>걸음수: {steps}</Text>
       {error && <Text style={styles.errorText}>{error}</Text>}
       <Button mode="contained" onPress={handleLogout} style={styles.logoutButton}>
-        Logout
+        로그아웃
       </Button>
     </View>
   );

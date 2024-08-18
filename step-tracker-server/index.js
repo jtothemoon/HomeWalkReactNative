@@ -9,6 +9,10 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+    res.send('Server is up and running!');
+});
+
 // MySQL 데이터베이스 연결 설정
 const dbConfig = {
     host: 'project-db-cgi.smhrd.com',

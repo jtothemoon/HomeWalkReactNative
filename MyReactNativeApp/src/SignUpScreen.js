@@ -15,7 +15,7 @@ const SignUpScreen = ({ navigation }) => {
         }
 
         try {
-            const response = await fetch('http://192.168.75.38:3000/register', {
+            const response = await fetch('https://a64e-218-239-146-55.ngrok-free.app/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

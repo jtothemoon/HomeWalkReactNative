@@ -12,7 +12,7 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = async () => {
         // 서버로 로그인 요청 보내기
         try {
-            const response = await fetch('http://192.168.75.38:3000/login', {
+            const response = await fetch('https://a64e-218-239-146-55.ngrok-free.app/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
