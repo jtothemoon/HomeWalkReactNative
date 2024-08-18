@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
+import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 import styles from './styles/splashStyles';
 
 const SplashScreen = ({ navigation }) => {
@@ -11,7 +12,18 @@ const SplashScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Loading...</Text>
+      <Image 
+        source={require('../src/assets/logo.png')} 
+        style={styles.logo} 
+        resizeMode="contain"
+      />
+      <Text style={styles.text}>HomeWalk</Text>
+      <ActivityIndicator 
+        animating={true} 
+        color={MD2Colors.blue500} 
+        size="large" 
+        style={styles.indicator}
+      />
     </View>
   );
 };

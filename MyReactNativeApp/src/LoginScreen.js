@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TextInput, Button } from 'react-native-paper';
 import styles from './styles/loginStyles';
-
-const users = {
-    'hj': '123',
-    'gy': '123',
-    'gm': '123',
-    'dg': '123',
-    'jh': '123'
-};
 
 const LoginScreen = ({ navigation }) => {
     const [username, setUsername] = useState('');
@@ -17,12 +10,6 @@ const LoginScreen = ({ navigation }) => {
     const [error, setError] = useState(null);
 
     const handleLogin = async () => {
-        // 하드코딩된 사용자 정보 확인
-        if (users[username] && users[username] === password) {
-            navigation.replace('Main', { userId: username });
-            return;
-        }
-
         // 서버로 로그인 요청 보내기
         try {
             const response = await fetch('http://192.168.75.38:3000/login', {
@@ -48,46 +35,30 @@ const LoginScreen = ({ navigation }) => {
         }
     };
 
-    const handleQuickLogin = (user) => {
-        const userPassword = users[user];
-        if (userPassword) {
-            navigation.replace('Main', { userId: user });
-        } else {
-            setError('Invalid username or password');
-        }
-    };
-
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+            <Text style={styles.title}>HomeWalk</Text>
             <TextInput
-                style={styles.input}
-                placeholder="Username"
+                mode="outlined"
+                label="아이디"
                 value={username}
                 onChangeText={setUsername}
+                style={styles.input}
             />
             <TextInput
-                style={styles.input}
-                placeholder="Password"
+                mode="outlined"
+                label="비밀번호"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
+                style={styles.input}
             />
             {error && <Text style={styles.errorText}>{error}</Text>}
-            <Button title="Login" onPress={handleLogin} />
-            <View style={styles.quickLoginContainer}>
-                {Object.keys(users).map((user) => (
-                    <TouchableOpacity
-                        key={user}
-                        style={styles.quickLoginButton}
-                        onPress={() => handleQuickLogin(user)}
-                    >
-                        <Text style={styles.buttonText}>{user}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            <Button mode="contained" onPress={handleLogin} style={styles.button}>
+                로그인
+            </Button>
             <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                <Text style={styles.signupText}>Don't have an account? Sign Up</Text>
+                <Text style={styles.signupText}>계정이 없으신가요? 회원가입</Text>
             </TouchableOpacity>
         </View>
     );

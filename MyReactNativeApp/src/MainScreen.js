@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button } from 'react-native-paper';
 import useStepTracker from './hooks/useStepTracker';
 import styles from './styles/mainStyles';
 
@@ -26,10 +27,12 @@ const MainScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome {userId}</Text>
-      <Text style={styles.steps}>Steps: {steps}</Text>
+      <Text style={styles.title}>오늘도 좋은 하루 되세요. {userId} 님</Text>
+      <Text style={styles.steps}>걸음수: {steps}</Text>
       {error && <Text style={styles.errorText}>{error}</Text>}
-      <Button title="Logout" onPress={handleLogout} />
+      <Button mode="contained" onPress={handleLogout} style={styles.logoutButton}>
+        Logout
+      </Button>
     </View>
   );
 };

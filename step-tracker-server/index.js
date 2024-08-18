@@ -83,19 +83,19 @@ setInterval(saveStepsToDatabase, 5000);  // 60000ms = 1분
 
 // 회원가입 엔드포인트 추가
 app.post('/register', async (req, res) => {
-    const { username, password, age } = req.body;
-    if (!username || !password || !age) {
+    const { username, password, email } = req.body;
+    if (!username || !password || !email) {
         return res.status(400).send('All fields are required');
     }
 
     try {
         const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute('SELECT id FROM users WHERE username = ?', [username]);
+        const [rows] = await connection.execute('SELECT user_id FROM users WHERE username = ?', [username]);
         if (rows.length > 0) {
             return res.status(409).send('Username already exists');
         }
 
-        await connection.execute('INSERT INTO users (username, password, age) VALUES (?, ?, ?)', [username, password, age]);
+        await connection.execute('INSERT INTO users (username, password, email) VALUES (?, ?, ?)', [username, password, email]);
         await connection.end();
         res.status(201).send('User registered successfully');
     } catch (error) {
@@ -104,25 +104,11 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// 하드코딩된 사용자 정보
-const users = {
-    'hj': '123',
-    'gy': '123',
-    'gm': '123',
-    'dg': '123',
-    'jh': '123'
-};
-
 // 로그인 엔드포인트 추가
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).send('Username and password are required');
-    }
-
-    // 하드코딩된 사용자 정보 확인
-    if (users[username] && users[username] === password) {
-        return res.status(200).send('Login successful');
     }
 
     // MySQL 데이터베이스에서 사용자 정보 확인

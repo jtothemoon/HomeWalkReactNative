@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, Alert } from 'react-native';
+import { TextInput, Button } from 'react-native-paper';
 import styles from './styles/signupStyles';
 
 const SignUpScreen = ({ navigation }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [age, setAge] = useState('');
+    const [email, setEmail] = useState('');
 
     const handleSignUp = async () => {
-        if (!username || !password || !age) {
+        if (!username || !password || !email) {
             Alert.alert('Error', 'All fields are required');
             return;
         }
@@ -19,7 +20,7 @@ const SignUpScreen = ({ navigation }) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username, password, age })
+                body: JSON.stringify({ username, password, email })
             });
 
             if (response.status === 201) {
@@ -37,29 +38,36 @@ const SignUpScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Sign Up</Text>
+            <Text style={styles.title}>HomeWalk</Text>
             <TextInput
-                style={styles.input}
-                placeholder="Username"
+                mode="outlined"
+                label="아이디"
                 value={username}
                 onChangeText={setUsername}
+                style={styles.input}
             />
             <TextInput
-                style={styles.input}
-                placeholder="Password"
+                mode="outlined"
+                label="비밀번호"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
+                style={styles.input}
             />
             <TextInput
+                mode="outlined"
+                label="이메일"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
                 style={styles.input}
-                placeholder="Age"
-                value={age}
-                onChangeText={setAge}
-                keyboardType="numeric"
             />
-            <Button title="Sign Up" onPress={handleSignUp} />
-            <Button title="Back" onPress={() => navigation.goBack()} color="#000080" />
+            <Button mode="contained" onPress={handleSignUp} style={styles.button}>
+                회원가입
+            </Button>
+            <Button mode="text" onPress={() => navigation.goBack()} style={styles.backButton} labelStyle={styles.backButtonText}>
+                뒤로가기
+            </Button>
         </View>
     );
 };
