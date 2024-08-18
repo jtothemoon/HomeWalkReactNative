@@ -98,7 +98,7 @@ const useStepTracker = () => {
     try {
       const timestamp = Date.now();
       console.log('Sending steps data:', { userId, steps, timestamp });
-      const response = await fetch('https://a64e-218-239-146-55.ngrok-free.app/steps', {
+      const response = await fetch('https://c703-218-239-146-55.ngrok-free.app/steps', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,0 +1,17 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/GoormSansBold.ttf",
+      "sha1": "72ec1bd5e2aecfb7985e79a096cdeea816009aac"
+    },
+    {
+      "path": "assets/fonts/GoormSansMedium.ttf",
+      "sha1": "cd01960db883264b332caf99a13ff4c3b61aca2a"
+    },
+    {
+      "path": "assets/fonts/GoormSansRegular.ttf",
+      "sha1": "cbe98e60f40bb3e7351e66db7f048a216fec0c33"
+    }
+  ]
+}

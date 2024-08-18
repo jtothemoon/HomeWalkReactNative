@@ -12,7 +12,7 @@ export default StyleSheet.create({
         marginBottom: 16,
         textAlign: 'center',
         color: '#37474F', // 진한 청회색 (text.primary)
-        fontFamily: 'GoormSansBold', // 테마에서 지정된 폰트
+        fontFamily: 'GoormSansBold', // GoormSansBold 폰트 적용
     },
     input: {
         borderWidth: 1,
@@ -22,6 +22,7 @@ export default StyleSheet.create({
         borderRadius: 4,
         backgroundColor: '#FFFFFF', // 흰색 배경 (background.paper)
         color: '#37474F', // 입력 텍스트 색상 (text.primary)
+        fontFamily: 'GoormSansRegular', // GoormSansRegular 폰트 적용
     },
     button: {
         backgroundColor: '#546E7A', // 청회색 (primary.main)
@@ -36,6 +37,6 @@ export default StyleSheet.create({
     backButtonText: {
         color: '#546E7A', // 청회색 (primary.main)
         textAlign: 'center',
-        fontFamily: 'GoormSansMedium', // 테마에서 지정된 폰트
+        fontFamily: 'GoormSansMedium', // GoormSansMedium 폰트 적용
     }
 });
